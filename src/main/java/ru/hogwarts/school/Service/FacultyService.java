@@ -2,38 +2,45 @@ package ru.hogwarts.school.Service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.Model.Faculty;
+import ru.hogwarts.school.Model.Student;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class FacultyService {
     HashMap<Long, Faculty> faculties = new HashMap<>();
     long id = 0;
 
-    public String add(String name, String color){
-       id++;
-       faculties.put(id, new Faculty(id,name,color));
-       return faculties.get(id).toString() + " was successfully added.";
+    public Faculty add(Faculty faculty){
+       faculty.setId(++id);
+       faculties.put(id, faculty);
+       return faculty;
     }
-    public String get(long id){
-        return faculties.get(id).toString();
+    public Faculty get(long id){
+        return faculties.get(id);
     }
-    public String update(long id, String newName, String newColor){
-        Faculty facultyToUpdate = faculties.get(id);
-        String dataToUpdate = facultyToUpdate.toString();
-        facultyToUpdate.setColor(newColor);
-        facultyToUpdate.setName(newName);
-        return "Credentials of " + dataToUpdate + " were updated to "+ facultyToUpdate;
+    public Collection<Faculty> filterByColor(String color) {
+        List<Faculty> tempCollection = new ArrayList<>(faculties.values()) ;
+        for (int i = 0; i < tempCollection.size(); i++) {
+            if (!tempCollection.get(i).getColor().equals(color)){
+                tempCollection.remove(i);
+            }
+        }
+        return tempCollection;
     }
-    public String remove(long id){
-        faculties.remove(id);
-        return faculties.remove(id).toString() + " was removed.";
+    public Faculty update(Faculty faculty){
+        if(faculties.containsKey(id)){
+            faculties.put(faculty.getId(),faculty);
+            return faculty;
+        }
+        return null;
     }
 
-    public String findByColor(String color) {
-        for (long i = 0; i < faculties.size(); i++) {
-            if(faculties.containsKey(i)&&faculties.get(i).getColor().equals(color))
-                return faculties.get(i).toString();
-        }
-        return "Search complete.";
+    public Faculty remove(long id){
+        return faculties.remove(id);
     }
+
 }

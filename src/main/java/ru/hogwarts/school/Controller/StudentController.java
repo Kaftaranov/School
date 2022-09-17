@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.Model.Student;
 import ru.hogwarts.school.Service.StudentService;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping(path = "/student")
 public class StudentController {
@@ -13,25 +15,38 @@ public class StudentController {
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-    @PostMapping("/add")
-    public ResponseEntity add(@RequestBody Student student){
+
+    @GetMapping("{id}")
+    public ResponseEntity<Student> getStudent (@PathVariable long id){
+        Student student = studentService.get(id);
+        if (student == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(student);
+    }
+    @GetMapping("{age}")
+    public ResponseEntity<Collection<Student>> filterByAge(@PathVariable int age){
+        Collection<Student> ageCollection = studentService.filterByAge(age);
+        if (ageCollection.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ageCollection);
+    }
+
+    @PostMapping
+    public Student add(@RequestBody Student student){
         return  studentService.add(student);
     }
-    @GetMapping({"id"})
-    public ResponseEntity find (@PathVariable long id){
-        return studentService.get(id);
-    }
-    @GetMapping({"age"})
-    public ResponseEntity findByAge(int age){
-        return studentService.findByAge(age);
-    }
     @PutMapping("/update")
-    public ResponseEntity update(@RequestParam("Id") long id, @RequestParam("new_name") String newName,
-                         @RequestParam("new_age") int newAge){
-        return studentService.update(id, newName,newAge);
+    public ResponseEntity<Student> update(@RequestBody Student student){
+        Student updatedstudent = studentService.update(student);
+        if (updatedstudent == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedstudent);
     }
     @DeleteMapping ("/remove")
-    public String remove(@RequestParam("Id") long id){
+    public Student remove(@RequestParam("Id") long id){
         return studentService.remove(id);
     }
 }
