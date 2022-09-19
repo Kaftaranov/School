@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
@@ -22,14 +23,11 @@ public class FacultyService {
     public Faculty get(long id){
         return faculties.get(id);
     }
-    public Collection<Faculty> filterByColor(String color) {
-        List<Faculty> tempCollection = new ArrayList<>(faculties.values()) ;
-        for (int i = 0; i < tempCollection.size(); i++) {
-            if (!tempCollection.get(i).getColor().equals(color)){
-                tempCollection.remove(i);
-            }
-        }
-        return tempCollection;
+    public List<Faculty> filterByColor(String color) {
+        List<Faculty> filteredByColor = new ArrayList<>(faculties.values()) ;
+        return filteredByColor.stream()
+                .filter(faculty ->faculty.getColor().equals(color))
+                .collect(Collectors.toList());
     }
     public Faculty update(Faculty faculty){
         if(faculties.containsKey(id)){

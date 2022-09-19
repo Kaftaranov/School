@@ -7,6 +7,7 @@ import ru.hogwarts.school.Model.Student;
 import ru.hogwarts.school.Service.FacultyService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/faculty")
@@ -24,9 +25,9 @@ public class FacultyController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("{color}")
-    public ResponseEntity<Collection<Faculty>> filterByColor(@PathVariable String color){
-        Collection<Faculty> colorCollection = facultyService.filterByColor(color);
+    @GetMapping("/color")
+    public ResponseEntity<List<Faculty>> filterByColor(@RequestParam String color){
+        List<Faculty> colorCollection = facultyService.filterByColor(color);
         if (colorCollection.isEmpty()){
             return ResponseEntity.notFound().build();
         }

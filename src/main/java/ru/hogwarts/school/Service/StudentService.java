@@ -1,13 +1,10 @@
 package ru.hogwarts.school.Service;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.Model.Student;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -21,14 +18,11 @@ public class StudentService {
     public Student get(long id) {
         return students.get(id);
     }
-    public Collection<Student> filterByAge(int age) {
-        List<Student> tempCollection = new ArrayList<>(students.values()) ;
-        for (int i = 0; i < tempCollection.size(); i++) {
-          if (tempCollection.get(i).getAge() != age){
-              tempCollection.remove(i);
-          }
-        }
-        return tempCollection;
+    public List<Student> filterByAge(int age) {
+        List<Student> filteredByAge = new ArrayList<>(students.values()) ;
+         return filteredByAge.stream()
+                 .filter(student ->student.getAge()==age)
+                 .collect(Collectors.toList());
     }
     public Student update(Student student) {
         if(students.containsKey(student.getId())){
